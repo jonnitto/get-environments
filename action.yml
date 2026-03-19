@@ -13,3 +13,7 @@ outputs:
 runs:
   using: 'node24'
   main: 'dist/index.js'
+
+branding:
+  icon: 'server'
+  color: 'orange'
