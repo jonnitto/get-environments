@@ -1,0 +1,15 @@
+name: 'Get Environments'
+description: 'Fetch all environments from a repository'
+
+inputs:
+  repository:
+    description: 'owner/repo (optional)'
+    required: false
+
+outputs:
+  environments:
+    description: 'Environment names (JSON array)'
+
+runs:
+  using: 'node24'
+  main: 'dist/index.js'

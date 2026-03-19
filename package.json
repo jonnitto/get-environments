@@ -1,0 +1,27 @@
+{
+  "name": "get-environments-action",
+  "version": "1.0.0",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "scripts": {
+    "clean": "rm -rf dist",
+    "build": "npm run build:prod",
+    "release": "npm run release:check && npm run build:prod",
+    "release:check": "npm run typecheck && npm run deps:status",
+    "deps:status": "npm outdated --json || true",
+    "typecheck": "tsc --noEmit",
+    "build:dev": "npm run clean && npm run typecheck && esbuild src/index.ts --bundle --platform=node --target=node24 --format=cjs --outfile=dist/index.js --sourcemap",
+    "build:prod": "npm run clean && npm run typecheck && esbuild src/index.ts --bundle --platform=node --target=node24 --format=cjs --outfile=dist/index.js --minify",
+    "prepare": "npm run build"
+  },
+  "dependencies": {
+    "@actions/core": "^3.0.0",
+    "@actions/github": "^9.0.0",
+    "@octokit/action": "^8.0.4"
+  },
+  "devDependencies": {
+    "@types/node": "^25.5.0",
+    "esbuild": "^0.27.4",
+    "typescript": "^5.4.0"
+  }
+}
