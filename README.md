@@ -42,6 +42,8 @@ jobs:
       - name: Get environments from current repository
         id: get_envs
         uses: jonnitto/get-environments
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Print output
         run: echo "${{ steps.get_envs.outputs.environments }}"
@@ -55,6 +57,8 @@ Use a specific repository:
   uses: jonnitto/get-environments
   with:
     repository: octo-org/example-repo
+  env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 ## Requirements
