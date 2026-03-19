@@ -8,53 +8,6 @@ type EnvironmentResponse = {
 
 main();
 
-async function run(): Promise<void> {
-  try {
-    const token = process.env.GITHUB_TOKEN;
-
-    if (!token) {
-      throw new Error('GITHUB_TOKEN is required');
-    }
-
-    const octokit = github.getOctokit(token);
-
-    // Input lesen
-    let repository = core.getInput('repository');
-
-    // 👉 Fallback auf aktuelles Repo
-    if (!repository) {
-      const { owner, repo } = github.context.repo;
-      repository = `${owner}/${repo}`;
-    }
-
-    if (!repository.includes('/')) {
-      throw new Error(
-        `Invalid repository format: "${repository}". Expected "owner/repo".`,
-      );
-    }
-
-    const [owner, repo] = repository.split('/');
-
-    core.info(`Using repository: ${owner}/${repo}`);
-
-    const response = await octokit.request(
-      'GET /repos/{owner}/{repo}/environments',
-      {
-        owner,
-        repo,
-      },
-    );
-
-    const names = (
-      (response.data as EnvironmentResponse).environments ?? []
-    ).map((env) => env.name);
-
-    core.setOutput('names', JSON.stringify(names));
-  } catch (error: any) {
-    core.setFailed(error.message);
-  }
-}
-
 async function main() {
   try {
     const token = process.env.GITHUB_TOKEN;
