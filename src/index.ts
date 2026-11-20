@@ -2,10 +2,6 @@ import * as core from '@actions/core';
 import * as github from '@actions/github';
 import { Octokit } from '@octokit/action';
 
-type EnvironmentResponse = {
-  environments?: Array<{ name: string }>;
-};
-
 main();
 
 async function main() {
@@ -37,7 +33,7 @@ async function main() {
   }
 }
 
-async function getEnviroments(repo: string, token: string) {
+async function getEnviroments(repo: string, token: string): Promise<string[]> {
   const octokit = new Octokit({ auth: token });
   const { url, headers } = octokit.request.endpoint(
     `GET /repos/${repo}/environments`,
@@ -46,7 +42,12 @@ async function getEnviroments(repo: string, token: string) {
   return data.map(({ name }: { name: string }) => name);
 }
 
-async function getPaginatedData(url: string, headers: any, octokit: Octokit) {
+type EnvironmentResponse = {
+  name: string
+  [key: string]: any
+};
+
+async function getPaginatedData(url: string, headers: any, octokit: Octokit): Promise<EnvironmentResponse[]> {
   const nextPattern = /(?<=<)([\S]*)(?=>; rel="next")/i;
   let pagesRemaining = true;
   let data: any = [];
@@ -58,7 +59,6 @@ async function getPaginatedData(url: string, headers: any, octokit: Octokit) {
     });
 
     const parsedData = parseData(response.data);
-    console.log(parsedData);
     data = [...data, ...parsedData];
 
     const linkHeader = response.headers.link;
@@ -75,7 +75,7 @@ async function getPaginatedData(url: string, headers: any, octokit: Octokit) {
   return data;
 }
 
-function parseData(data: any) {
+function parseData(data: any): EnvironmentResponse[] {
   // If the data is an array, return that
   if (Array.isArray(data)) {
     return data;
